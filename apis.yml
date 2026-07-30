@@ -1,9 +1,24 @@
 aid: lucky-cart
 name: Lucky Cart
-description: 'Lucky Cart is a company surfaced as a portfolio company of partech and added to the API
-  Evangelist network as a stub for enrichment. Sector: Applicative SaaS. This profile is a lead awaiting
-  the enrichment pipeline.'
+description: 'Lucky Cart is a French MarTech company specializing in retail media and smart commerce
+  for grocery and consumer-goods retailers. It combines first-party transactional data with e-retail
+  media, machine learning, and AI to power personalized shopper engagement, gamified promotions, and
+  the monetization of retailer audiences at scale. Lucky Cart works with major French grocery retailers
+  and CPG brands to activate transactional data into targeted advertising, loyalty, and measurable
+  campaigns. The company publishes no public developer or API surface at this time.'
 url: https://raw.githubusercontent.com/api-evangelist/lucky-cart/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://cdn.prod.website-files.com/68c2baa88e31954e039031a7/68d2e246b13b0428fe573013_lucky-cart-share.avif
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
@@ -12,10 +27,16 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-20'
 tags:
 - Company
-- Applicative Saas
+- Retail Media
+- MarTech
+- E-Commerce
+- Advertising
+- Personalization
+- Loyalty
+- CPG
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -23,5 +44,20 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/lucky-cart-domain-security.yml
 - type: Website
-  url: http://luckycart.com/
+  url: https://www.luckycart.com/
+- type: Support
+  url: https://www.luckycart.com/contact
+- type: Blog
+  url: https://www.luckycart.com/actualites
+- type: PrivacyPolicy
+  url: https://www.luckycart.com/politique-de-confidentialite
+- type: TermsOfService
+  url: https://www.luckycart.com/mentions-legales
+x-enrichment:
+  date: '2026-07-20'
+  status: minimal
+  pass: local-v1
+  artifacts_added: 1
