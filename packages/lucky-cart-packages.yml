@@ -1,0 +1,101 @@
+generated: '2026-08-12'
+method: searched
+source: https://github.com/lucky-cart
+note: >-
+  Lucky Cart publishes three first-party client SDKs from its own GitHub organization
+  (github.com/lucky-cart). None of the three are distributed through npm, PyPI, Maven
+  Central, NuGet, RubyGems, Packagist or crates.io — a search of the npm registry for
+  "luckycart" and "lucky-cart" returned no Lucky Cart package. Distribution is: a CDN
+  script tag (JavaScript), Swift Package Manager pointed straight at the GitHub repo
+  (iOS), and JitPack building from the GitHub tag (Android). Every one of the three
+  SDKs last shipped in 2022-2023; see the currency block below.
+registries_checked:
+- registry: npm
+  query: luckycart, lucky-cart
+  result: no first-party package published
+- registry: pypi
+  result: not applicable — no Python SDK published
+- registry: maven-central
+  result: not published; Android SDK is distributed through JitPack instead
+- registry: jitpack
+  result: com.github.lucky-cart:lucky-cart-android resolves, release 1.0.18
+- registry: swift-package-manager
+  result: resolved directly from the GitHub repository URL, no central index
+packages:
+- language: javascript
+  registry: cdn
+  name: luckycart.js
+  url: https://integration.luckycart.com/sdk/luckycart.js
+  source_code: https://github.com/lucky-cart/luckycart-js-sdk
+  install: <script src="https://integration.luckycart.com/sdk/luckycart.js"></script>
+  official: true
+  version: null
+  published: null
+  note: >-
+    Distribution is an UNPINNED CDN script tag — the URL carries no version segment, so
+    a consumer cannot tell which build they are loading and neither can we. There is no
+    registry metadata endpoint to query. Worse, the exact loader URL published in the
+    SDK README returned HTTP 404 when probed on 2026-08-12 (as did
+    /js-sdk/sdk/luckycart.js and /luckycart.js on the same host), while a sibling asset
+    path on that host — /js-sdk/sdk/assets/luckycart.min.css — returned 200. The
+    documented installation instruction therefore does not currently resolve. Last
+    commit to the source repository: 2022-08-26.
+  last_source_commit: '2022-08-26'
+  probe:
+    url: https://integration.luckycart.com/sdk/luckycart.js
+    http_status: 404
+    checked: '2026-08-12'
+- language: swift
+  registry: swift-package-manager
+  name: LuckyCartSDK
+  url: https://github.com/lucky-cart/lucky-cart-ios
+  install: Add https://github.com/lucky-cart/lucky-cart-ios as a Swift Package in Xcode
+  official: true
+  version: 1.0.0
+  published: null
+  note: >-
+    Swift Package Manager resolves from the Git tag, so there is no registry metadata
+    endpoint carrying a publish date. Latest tag is 1.0.0; the tag object could not be
+    dereferenced to a commit date through the GitHub API, so `published` is recorded
+    null rather than guessed. The repository's most recent commit is 2023-03-01, which
+    bounds the release. Depends on SDWebImage for banner image loading.
+  last_source_commit: '2023-03-01'
+  dependencies:
+  - https://github.com/SDWebImage/SDWebImage
+- language: kotlin
+  registry: jitpack
+  name: com.github.lucky-cart:lucky-cart-android
+  url: https://jitpack.io/#lucky-cart/lucky-cart-android
+  source_code: https://github.com/lucky-cart/lucky-cart-android
+  install: implementation 'com.github.lucky-cart:lucky-cart-android:1.0.18'
+  official: true
+  version: 1.0.18
+  published: '2023-01-09'
+  note: >-
+    Read from the JitPack build metadata endpoint
+    (jitpack.io/api/builds/com.github.lucky-cart/lucky-cart-android/latestOk), which
+    reports status ok, isTag true, version 1.0.18, build time 1673259345983 —
+    2023-01-09. The 1.0.18 tag commit is dated 2023-01-09T10:10:48Z, which agrees.
+    maven-metadata.xml on JitPack confirms 1.0.18 as the current release. Not published
+    to Maven Central.
+  last_source_commit: '2023-01-09'
+sample_applications:
+- name: lucky-cart-client-sample-ios
+  url: https://github.com/lucky-cart/lucky-cart-client-sample-ios
+  official: true
+- name: lucky-cart-client-sample-android
+  url: https://github.com/lucky-cart/lucky-cart-client-sample-android
+  official: true
+currency:
+  assessed: '2026-08-12'
+  finding: >-
+    All three first-party SDKs are stale. The most recent release of any Lucky Cart
+    client library is the Android SDK 1.0.18 on 2023-01-09; the iOS repository last
+    changed 2023-03-01 and the JavaScript SDK 2022-08-26. No SDK has shipped in over
+    three years, and the JavaScript SDK's own documented CDN loader URL now 404s. The
+    APIs the SDKs call (api.luckycart.com, shopper-events.luckycart.com,
+    game-experience-api.luckycart.com, displayer.luckycart.com) all resolve and answer,
+    so the platform is live while its published client libraries are not maintained in
+    the open.
+  newest_release: '2023-01-09'
+  newest_release_package: com.github.lucky-cart:lucky-cart-android

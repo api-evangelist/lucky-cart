@@ -5,19 +5,25 @@ description: 'Lucky Cart is a French MarTech company specializing in retail medi
   media, machine learning, and AI to power personalized shopper engagement, gamified promotions, and
   the monetization of retailer audiences at scale. Lucky Cart works with major French grocery retailers
   and CPG brands to activate transactional data into targeted advertising, loyalty, and measurable
-  campaigns. The company publishes no public developer or API surface at this time.'
+  campaigns. Its integration surface is a set of HTTP APIs consumed through three first-party SDKs
+  published on GitHub — a shopper-event ingest, a promotional banner displayer, a cart-to-ticket
+  endpoint that mints the post-purchase game, and a hosted game experience. Lucky Cart publishes no
+  OpenAPI, no developer portal and no self-service signup: API keys are issued manually by its
+  integration team to contracted retailers, and its Help Centre is access-restricted.'
 url: https://raw.githubusercontent.com/api-evangelist/lucky-cart/refs/heads/main/apis.yml
 accessModel:
-  pricing: unknown
-  onboarding: unknown
+  pricing: none-published
+  onboarding: sales
   trial: false
   try_now: false
   public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
-  method: derived
+  label: Enterprise sales only
+  confidence: high
+  source:
+  - https://www.luckycart.com/en/contact
+  - https://github.com/lucky-cart/luckycart-js-sdk#initialization
+  generated: '2026-08-12'
+  method: searched
 image: https://cdn.prod.website-files.com/68c2baa88e31954e039031a7/68d2e246b13b0428fe573013_lucky-cart-share.avif
 x-type: company
 x-source: vc-portfolio
@@ -27,7 +33,7 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-20'
+modified: '2026-08-12'
 tags:
 - Company
 - Retail Media
@@ -37,7 +43,133 @@ tags:
 - Personalization
 - Loyalty
 - CPG
-apis: []
+- Grocery
+- Promotions
+- Gamification
+- Shopper Marketing
+- First-Party Data
+- France
+apis:
+- aid: lucky-cart:core-api
+  name: Lucky Cart Core API
+  description: 'The core Lucky Cart API. POST /cart/ticket submits a validated shopping cart —
+    cart identifier, shopper identifier, gross and net amounts, and product lines — and Lucky Cart
+    determines whether a game can be generated, returning a ticket plus the device-specific intro
+    image and game URL. This is the only signed endpoint: the request body carries auth_ts, auth_key,
+    auth_v "2.0" and auth_sign, an HMAC-SHA256 digest of the timestamp keyed by the site secret. Game
+    data is read back at /{siteKey}/game/{cartId} or /{siteKey}/game/cust/{shopperId}, optionally
+    suffixed with the device. Cart ingestion is asynchronous, so the read returns the literal error
+    "Cart not found" until it completes and clients poll on a bounded attempt budget.'
+  humanURL: https://github.com/lucky-cart/luckycart-js-sdk#send-the-current-transaction
+  baseURL: https://api.luckycart.com
+  tags:
+  - Transactions
+  - Promotions
+  - Gamification
+  properties:
+  - type: Authentication
+    url: authentication/lucky-cart-authentication.yml
+  - type: Conventions
+    url: conventions/lucky-cart-conventions.yml
+  - type: SourceCode
+    url: https://github.com/lucky-cart/luckycart-js-sdk
+- aid: lucky-cart:shopper-events-api
+  name: Lucky Cart Shopper Events API
+  description: 'Event ingest for shopper behaviour on a retailer storefront. A single POST /event
+    endpoint accepts {shopperId, siteKey, eventName, payload}, where eventName is a Lucky Cart event
+    such as pageViewed or cartValidated and the payload carries the page context — pageType, pageId,
+    storeType and storeId. Events are what make a shopper eligible for banner selection and for a
+    game experience, so the event call precedes every banner or experience read in the documented
+    integration workflow. The service is versioned in the URI path at /v1 and accepts an empty
+    response body on success.'
+  humanURL: https://github.com/lucky-cart/lucky-cart-ios#pageviewed-event
+  baseURL: https://shopper-events.luckycart.com/v1
+  tags:
+  - Events
+  - Analytics
+  - Shopper Marketing
+  properties:
+  - type: Authentication
+    url: authentication/lucky-cart-authentication.yml
+  - type: SourceCode
+    url: https://github.com/lucky-cart/lucky-cart-ios
+- aid: lucky-cart:shopper-experience-api
+  name: Lucky Cart Shopper Experience API
+  description: 'Returns the set of Lucky Cart experiences currently available to a given shopper.
+    GET /experiences takes shopperId, siteKey and an experienceType filter as query parameters and
+    answers with the experiences that shopper is eligible for. Used by the web SDK to decide what to
+    surface to a returning shopper independently of a specific cart. Versioned in the URI path at
+    /v1. No pagination is offered on the collection.'
+  humanURL: https://github.com/lucky-cart/luckycart-js-sdk
+  baseURL: https://shopper-experience.luckycart.com/v1
+  tags:
+  - Experiences
+  - Personalization
+  properties:
+  - type: Authentication
+    url: authentication/lucky-cart-authentication.yml
+  - type: SourceCode
+    url: https://github.com/lucky-cart/luckycart-js-sdk
+- aid: lucky-cart:game-experience-api
+  name: Lucky Cart Game Experience API
+  description: 'Grants access to the gamified post-purchase experiences a shopper has earned. GET
+    /game-experiences-access takes shopperId, siteKey and a count parameter capping how many
+    experiences to return, and answers with the game experiences and the template each should be
+    rendered with. The mobile SDKs call this after a cartValidated event to decide which game to
+    present. Versioned in the URI path at /v1. The count parameter is the only collection-bounding
+    mechanism — there is no cursor or offset.'
+  humanURL: https://github.com/lucky-cart/lucky-cart-ios#configuration
+  baseURL: https://game-experience-api.luckycart.com/v1
+  tags:
+  - Gamification
+  - Loyalty
+  - Experiences
+  properties:
+  - type: Authentication
+    url: authentication/lucky-cart-authentication.yml
+  - type: SourceCode
+    url: https://github.com/lucky-cart/lucky-cart-ios
+- aid: lucky-cart:displayer-api
+  name: Lucky Cart Displayer API
+  description: 'Selects and returns the promotional banner to render for a given page context. The
+    route encodes the whole selection key in the path — /{siteKey}/{shopper}/banner/{platform}/
+    {pageType}/{format} for a single promotion, or /banners/ for every matching promotion — with
+    pageId, store and store_type as optional query parameters for finer targeting such as
+    store-local promotions. Platform distinguishes desktop, mobile and webmobile inventory. The
+    response carries the image URL, the click-through URL, the campaign identifier and the campaign
+    name. This host is unversioned.'
+  humanURL: https://github.com/lucky-cart/lucky-cart-ios#request-the-banner-data
+  baseURL: https://displayer.luckycart.com
+  tags:
+  - Retail Media
+  - Advertising
+  - Banners
+  properties:
+  - type: Authentication
+    url: authentication/lucky-cart-authentication.yml
+  - type: Components
+    url: components/lucky-cart-components.yml
+  - type: SourceCode
+    url: https://github.com/lucky-cart/lucky-cart-ios
+- aid: lucky-cart:promo-matching-api
+  name: Lucky Cart Promo Matching API
+  description: 'The promo-matching and creative-delivery host used by the JavaScript SDK. It serves
+    the same banner selection routes as the displayer — /{siteKey}/{shopper}/banner|banners/{subset}/
+    {pageType}/{format} where subset is desktop, mobile or webmobile — and additionally serves the
+    creative itself and the click-through redirect at /{campaignId}/{customer}/image and
+    /{campaignId}/{customer}/jump. Those two per-campaign, per-customer URLs are how impression and
+    click attribution are bound to an individual shopper. Unversioned; answers 204 at its root.'
+  humanURL: https://github.com/lucky-cart/luckycart-js-sdk#display-banners
+  baseURL: https://promomatching.luckycart.com
+  tags:
+  - Retail Media
+  - Advertising
+  - Attribution
+  properties:
+  - type: Components
+    url: components/lucky-cart-components.yml
+  - type: SourceCode
+    url: https://github.com/lucky-cart/luckycart-js-sdk
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -56,8 +188,36 @@ common:
   url: https://www.luckycart.com/politique-de-confidentialite
 - type: TermsOfService
   url: https://www.luckycart.com/mentions-legales
+- type: GitHubOrganization
+  url: https://github.com/lucky-cart
+- type: Documentation
+  url: https://github.com/lucky-cart/luckycart-js-sdk#readme
+- type: Login
+  url: https://app.luckycart.com/
+- type: Packages
+  url: packages/lucky-cart-packages.yml
+- type: SDKs
+  url: packages/lucky-cart-packages.yml
+- type: Authentication
+  url: authentication/lucky-cart-authentication.yml
+- type: Conventions
+  url: conventions/lucky-cart-conventions.yml
+- type: Components
+  url: components/lucky-cart-components.yml
+- type: Conformance
+  url: conformance/lucky-cart-conformance.yml
+- type: Compliance
+  url: https://www.luckycart.com/en/certifications
+- type: Lifecycle
+  url: lifecycle/lucky-cart-lifecycle.yml
+- type: Plans
+  url: plans/lucky-cart-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/lucky-cart-rate-limits.yml
+- type: LLMsTxt
+  url: llms/lucky-cart-llms.txt
 x-enrichment:
-  date: '2026-07-20'
-  status: minimal
+  date: '2026-08-12'
+  status: enriched
+  artifacts_added: 10
   pass: local-v1
-  artifacts_added: 1

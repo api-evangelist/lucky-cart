@@ -1,0 +1,127 @@
+generated: '2026-08-12'
+method: searched
+source: https://github.com/lucky-cart/luckycart-js-sdk
+sources:
+- https://github.com/lucky-cart/luckycart-js-sdk#display-banners
+- https://github.com/lucky-cart/lucky-cart-ios#display-the-banner
+- https://github.com/lucky-cart/lucky-cart-android#use-in-client-application
+note: >-
+  Lucky Cart's integration model is component-first rather than API-first. The SDKs do
+  not simply return JSON for a retailer to render — they return ready-to-mount UI: a
+  built DOM element on web, a loadable view on iOS, a custom Android view. This is a
+  genuine embedded-component surface distinct from the server-side client libraries in
+  packages/, so it is recorded here. Every component below is named in Lucky Cart's own
+  SDK documentation.
+loaders:
+- platform: web
+  name: luckycart.js
+  url: https://integration.luckycart.com/sdk/luckycart.js
+  instantiation: new LuckyCart(AUTH_KEY, AUTH_SECRET)
+  note: >-
+    Loader URL is unpinned and returned HTTP 404 when probed on 2026-08-12 — see
+    packages/lucky-cart-packages.yml.
+- platform: ios
+  name: LuckyCartSDK
+  url: https://github.com/lucky-cart/lucky-cart-ios
+  instantiation: LuckyCart.shared.setSiteKey / setUser
+  dependencies:
+  - SDWebImage
+- platform: android
+  name: LuckCartSDK
+  url: https://jitpack.io/#lucky-cart/lucky-cart-android
+  instantiation: LuckCartSDK(context).init(LCAuthorization(AUTH_KEY, ""), null)
+families:
+- family: banners
+  description: >-
+    Promotional banner surfaces placed on retailer storefront pages. The SDK selects
+    which promotion to show for the current shopper, page type and format, then returns a
+    mounted element rather than raw data.
+  components:
+  - platform: web
+    name: bannerData.HTMLElement
+    type: DOM element
+    css_class: div.lc-banner
+    retrieval: await luckycartSDK.getBannerDetails(pageType, format, pageId, options)
+    mount: document.querySelector('#root').append(bannerData.HTMLElement)
+    payload_fields:
+    - hasImage
+    - image
+    - url
+    - name
+    - campaign
+    - HTMLElement
+    events:
+    - name: bannerDisplay
+      note: dispatched on the element; event.detail carries the original bannerData
+    - name: bannerClick
+      note: dispatched on the element; event.detail carries the original bannerData
+  - platform: ios
+    name: LCBannerView
+    type: UIView
+    retrieval: LuckyCart.shared.getBannerExperienceDetail(pageType:format:pageId:store:storeType:)
+    mount: LCBannerView.load(owner:) then set storeId, storeType, pageId, pageType, bannerExperience
+    variants:
+    - standalone view
+    - UITableViewCell via LCContainerCell and LCBannerView.dequeue(tableView, indexPath)
+    - UICollectionViewCell
+  - platform: ios
+    name: LCBannersView
+    type: UIView
+    note: multi-banner variant, backed by the /banners displayer route
+  - platform: android
+    name: com.luckycart.views.BannerView
+    type: Android View
+    markup: <com.luckycart.views.BannerView android:id="@+id/bannerView" .../>
+    retrieval: luckyCartSDK.getBannersExperience(page_type, format)
+    binding: bannerView.setBannerParams(item, clickListener, listener)
+- family: game-experience
+  description: >-
+    The gamified post-purchase surface — Lucky Cart's signature product. After a cart is
+    validated the SDK obtains a ticket and renders the game in a hosted frame served from
+    experiences.luckycart.com, so the game itself is Lucky Cart-hosted and the retailer
+    embeds it.
+  hosted: true
+  host: https://experiences.luckycart.com
+  components:
+  - platform: web
+    name: game iframe
+    type: iframe
+    src_template: https://experiences.luckycart.com/?siteKey={siteKey}&customerUid={shopper}&cartUid={cartId}&ticketCode={ticketCode}
+    note: >-
+      A second form omits ticketCode and passes a prefixed cart identifier. Rendered
+      inside a modal built on the bundled tingle.js library.
+  - platform: ios
+    name: LCWebviewViewController
+    type: UIViewController
+    note: presents the hosted game experience in a web view
+  - platform: android
+    name: game experience view
+    retrieval: luckyCartSDK returns GameExperience list via onGameListReceived
+bundled_third_party_assets:
+- name: splide.js
+  role: banner carousel / slider
+  files:
+  - sdk/assets/splide.min.js
+  - sdk/assets/splide.min.css
+- name: tingle.js
+  role: modal used to present the game experience
+  files:
+  - sdk/assets/tingle.min.js
+  - sdk/assets/tingle.min.css
+- name: hash.min.js
+  role: hashing helper used for request signing
+  files:
+  - sdk/assets/hash.min.js
+- name: luckycart.min.css
+  role: Lucky Cart component stylesheet
+  files:
+  - sdk/assets/luckycart.min.css
+  cdn: https://integration.luckycart.com/js-sdk/sdk/assets/luckycart.min.css
+  probe:
+    http_status: 200
+    checked: '2026-08-12'
+asset_host: https://integration.luckycart.com/js-sdk/sdk/assets
+sample_integrations:
+- https://github.com/lucky-cart/luckycart-js-sdk/tree/master/client-sample
+- https://github.com/lucky-cart/lucky-cart-client-sample-ios
+- https://github.com/lucky-cart/lucky-cart-client-sample-android

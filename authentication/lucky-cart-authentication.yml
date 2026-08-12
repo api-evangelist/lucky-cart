@@ -1,0 +1,111 @@
+generated: '2026-08-12'
+method: searched
+source: https://github.com/lucky-cart/luckycart-js-sdk
+sources:
+- https://github.com/lucky-cart/luckycart-js-sdk/blob/master/sdk/src/luckycart.js
+- https://github.com/lucky-cart/luckycart-js-sdk#initialization
+- https://github.com/lucky-cart/lucky-cart-ios#configuration
+- https://github.com/lucky-cart/lucky-cart-android#use-in-client-application
+note: >-
+  Lucky Cart publishes no OpenAPI, so nothing here is derived from a machine-readable
+  contract. Everything below is read from the authentication code and installation
+  instructions in Lucky Cart's own three first-party SDK repositories. Lucky Cart does
+  not use OAuth 2.0, OpenID Connect, or HTTP bearer tokens anywhere in the published
+  client surface. Credentials are issued out of band: the JS SDK README states the key
+  and secret are "provided by our integration team", so there is no self-service key
+  issuance. There is no public auth reference page — the Help Centre at
+  kb.luckycart.com that would carry one is access-restricted (HTTP 403).
+summary:
+  types:
+  - apiKey
+  - custom-hmac-signature
+  api_key_in:
+  - body
+  - path
+  - query
+  oauth2_flows: []
+  openid_connect: false
+  mutual_tls: false
+  bearer_tokens: false
+  self_service_key_issuance: false
+  credential_issuance: manual, via the Lucky Cart integration team
+schemes:
+- name: siteKey
+  type: apiKey
+  aliases:
+  - AUTH_KEY
+  - authKey
+  - siteKey
+  in:
+  - path
+  - query
+  - body
+  description: >-
+    The per-site public identifier. It appears as the first path segment on the
+    displayer and promo-matching hosts
+    (/{siteKey}/{shopper}/banner/{subset}/{pageType}/{format}), as the siteKey query
+    parameter on the Shopper Experience and Game Experience APIs, and as a body field on
+    the Shopper Events API. Set with `new LuckyCart(AUTH_KEY, AUTH_SECRET)` in
+    JavaScript, `LuckyCart.shared.setSiteKey("siteKeyToken")` in Swift, and
+    `LCAuthorization(AUTH_KEY, "")` in Kotlin.
+  sources:
+  - luckycart-js-sdk/sdk/src/luckycart.js
+  - lucky-cart-ios/Sources/LuckyCartSDK/LuckyCart.swift
+- name: auth_secret
+  type: custom
+  scheme: hmac-sha256-request-signature
+  in: body
+  description: >-
+    A shared secret used to sign write requests to the core API. It is never sent on the
+    wire. The JS SDK signs the current UNIX timestamp with HMAC-SHA256 keyed by the
+    secret (CryptoJS.HmacSHA256(ts, this.auth.secret)) and appends four fields to the
+    request body — auth_ts (the timestamp), auth_key (the site key), auth_v ("2.0", the
+    signature scheme version) and auth_sign (the hex digest). Only signed calls carry
+    it; read calls to the banner, experience and game-data endpoints are unsigned. Note
+    the Android SDK constructs LCAuthorization with an EMPTY secret
+    (`LCAuthorization(AUTH_KEY, "")`), so the mobile surface appears to exercise only
+    the unsigned read paths.
+  signature:
+    algorithm: HMAC-SHA256
+    signed_payload: UNIX timestamp in seconds, as a string
+    version_field: auth_v
+    version_value: '2.0'
+    fields:
+    - auth_ts
+    - auth_key
+    - auth_v
+    - auth_sign
+    applies_to:
+    - POST https://api.luckycart.com/cart/ticket
+  sources:
+  - luckycart-js-sdk/sdk/src/luckycart.js
+- name: shopperId
+  type: identifier
+  in:
+  - path
+  - query
+  - body
+  description: >-
+    Not a credential, but required alongside the site key on nearly every call. The
+    retailer's own customer identifier, set with setShopper()/setUser()/setUser(). The
+    JS SDK README warns that an "automaton" must already be attached to the supplied
+    shopperUid before cart data will be accepted, which means shopper identifiers are
+    provisioned on the Lucky Cart side rather than accepted arbitrarily.
+transport:
+  https_required: true
+  content_type: application/json
+  observed_headers:
+  - Content-Type: application/json
+  - Accept: application/json
+  note: >-
+    No Authorization header is used anywhere in the published SDKs. Credentials travel
+    as path segments, query parameters and body fields, which means the site key is
+    visible in URLs and therefore in browser history, referrers and intermediary logs.
+    This is consistent with the product design — the JS SDK is loaded into a retailer's
+    public storefront pages, so the site key is a public identifier by construction and
+    the secret is the only real credential.
+gaps:
+- no published authentication reference page (kb.luckycart.com returns 403)
+- no OpenAPI securitySchemes to validate this profile against
+- no documented key rotation, revocation or expiry policy
+- no scopes or permissions model — access is all-or-nothing per site key

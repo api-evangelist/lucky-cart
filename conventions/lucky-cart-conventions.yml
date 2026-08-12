@@ -1,0 +1,149 @@
+generated: '2026-08-12'
+method: searched
+source: https://github.com/lucky-cart/luckycart-js-sdk
+sources:
+- https://github.com/lucky-cart/luckycart-js-sdk/blob/master/sdk/src/luckycart.js
+- https://github.com/lucky-cart/lucky-cart-ios/blob/main/Sources/LuckyCartSDK/LuckyCart.swift
+- https://github.com/lucky-cart/lucky-cart-ios/blob/main/Sources/LuckyCartSDK/Models/LCConfiguration.swift
+- https://github.com/lucky-cart/lucky-cart-android#use-in-client-application
+note: >-
+  Lucky Cart publishes no OpenAPI and no public API reference, so these cross-cutting
+  semantics are read out of its own first-party SDK source code — the only public,
+  machine-readable description of how the APIs behave. Where the SDKs disagree with each
+  other, both readings are recorded rather than reconciled. Nothing here is inferred
+  from a generic REST convention; each entry cites the SDK code that establishes it.
+authentication:
+  style: site key plus out-of-band shared secret
+  header: none — no Authorization header is used
+  detail: see authentication/lucky-cart-authentication.yml
+  signature: HMAC-SHA256 over a UNIX timestamp, sent as auth_sign with auth_v "2.0"
+idempotency:
+  supported: false
+  evidence: >-
+    NOT SUPPORTED. No idempotency key header, parameter or body field appears anywhere in
+    the three first-party SDKs, and no idempotency semantics are documented. The only
+    write endpoints are POST /cart/ticket and POST /v1/event; both are fire-and-forget.
+    The JS SDK's sendShopperEvent() swallows every failure in a .catch() that logs and
+    returns, so an event that fails is silently dropped rather than retried. This is
+    recorded as an explicit negative so the absence is legible; NO Idempotency pointer is
+    emitted in apis.yml.
+  retry_hazard: >-
+    getGameData() retries the same GET up to a bounded attempt count when the API answers
+    "Cart not found". That is a safe read retry, but it means the cart-to-game handoff is
+    eventually-consistent: a client must poll after POST /cart/ticket rather than rely on
+    a synchronous result.
+pagination:
+  supported: false
+  evidence: >-
+    No pagination appears in any SDK call. Collection reads are bounded by a caller-
+    supplied cap instead: the Game Experience API takes a `count` query parameter
+    (getGameExperiences), and the banner endpoints return either one banner (/banner) or
+    all matching promotions (/banners) with no cursor, offset, page or limit parameter
+    and no next-page field in the response.
+  bounding_parameter: count
+  applies_to: GET https://game-experience-api.luckycart.com/v1/game-experiences-access
+field_expansion:
+  supported: false
+  evidence: >-
+    No expand, fields, include or sparse-fieldset parameter appears in any SDK. The
+    /banner vs /banners route pair is the only shaping mechanism — a route choice, not a
+    parameter.
+metadata:
+  supported: partial
+  evidence: >-
+    Callers may attach arbitrary selection context to banner requests as extra query
+    parameters — the JS SDK's getBannerDetails() accepts an options object that is
+    flattened into the query string (documented example: { shopId: 1480 } to restrict to
+    local promotions). The iOS SDK exposes the same idea as named parameters: store,
+    store_type, pageId. This is targeting context, not free-form metadata storage; there
+    is no metadata object echoed back on responses.
+request_tracing:
+  request_id_header: none
+  evidence: >-
+    No request-id, correlation-id or trace header is set or read by any SDK. There is no
+    documented way for a caller to correlate a request with a Lucky Cart-side log entry,
+    which is a real support gap given the Help Centre is access-restricted.
+  correlation_identifiers:
+  - cartId
+  - shopperId / customerUid
+  - siteKey
+  - campaign
+versioning:
+  scheme: uri-path, applied inconsistently per service
+  detail: >-
+    Three of the six hosts pin a /v1 path prefix into the SDK-configurable base URL
+    (shopper-events, shopper-experience, game-experience-api). The core API host
+    (api.luckycart.com), the displayer host and the promo-matching host carry NO version
+    segment at all — their routes begin directly with the site key or the resource. There
+    is no Accept-header, date-header or query-parameter versioning, no published version
+    policy, and no deprecation signalling.
+  versioned_services:
+  - https://shopper-events.luckycart.com/v1
+  - https://shopper-experience.luckycart.com/v1
+  - https://game-experience-api.luckycart.com/v1
+  unversioned_services:
+  - https://api.luckycart.com
+  - https://displayer.luckycart.com
+  - https://promomatching.luckycart.com
+  client_override: >-
+    The iOS SDK lets an integrator repoint every base URL at runtime
+    (LCConfiguration.eventBaseUrl / displayerBaseUrl / gameBaseUrl), and the JS SDK
+    accepts apiHost, imagesHost and experienceHost options. Base URLs are therefore
+    treated as configuration, not contract.
+error_envelope:
+  format: proprietary JSON, not RFC 9457
+  detection: >-
+    The JS SDK never reads the HTTP status alone. requestAPI() parses the body first and
+    throws when `response.status >= 400`, meaning the core API repeats its status code
+    INSIDE the JSON body. requestBannerAPI() and requestShopperExperienceAPI() instead
+    check the real HTTP status and read `response.message`. So the two error shapes
+    coexist across services.
+  fields:
+  - name: status
+    type: integer
+    where: response body, core API
+    note: mirrors the HTTP status code inside the payload
+  - name: error
+    type: string
+    where: response body, core API
+    note: human-readable message; the literal value "Cart not found" is load-bearing —
+      the SDK string-matches it to decide whether to retry
+  - name: message
+    type: string
+    where: response body, banner and experience APIs
+  known_values:
+  - error: Cart not found
+    meaning: the cart has not yet been ingested and the game is not ready
+    handling: retry the same GET after an interval, up to a bounded attempt count
+  problem_json: false
+  detail: see errors/ — no error catalog is published by Lucky Cart
+rate_limit_signaling:
+  headers: none
+  evidence: >-
+    No SDK sets, reads or documents X-RateLimit-*, RateLimit-*, or Retry-After. No 429
+    handling exists in any client. See rate-limits/lucky-cart-rate-limits.yml.
+  client_side_throttling: >-
+    Both mobile SDKs ship a client-configurable retry/polling budget instead — iOS
+    exposes apiRetries (default 5) and apiRetryDelay (default 0.5s); Android exposes
+    setPollingConfig(retryAfter, maxAttempts) with a documented 500ms / 5 attempts. These
+    are client defaults chosen by Lucky Cart, not a server-advertised limit.
+content_negotiation:
+  request_content_type: application/json
+  accept: application/json
+  detail: >-
+    The iOS request manager sets exactly one header, content-type: application/json. The
+    JS shopper-event path additionally sets Accept: application/json. No other
+    representation is offered.
+success_semantics:
+  accepted_statuses: 200-299
+  detail: >-
+    The iOS LCRequestManager treats any 2xx as success and any other status as
+    URLError.badServerResponse; a zero-length body is decoded as boolean true, so
+    204-style empty responses are normal on the event endpoint. The promo-matching host
+    answering 204 at its root is consistent with that.
+cross_links:
+  authentication: authentication/lucky-cart-authentication.yml
+  rate_limits: rate-limits/lucky-cart-rate-limits.yml
+  lifecycle: lifecycle/lucky-cart-lifecycle.yml
+  packages: packages/lucky-cart-packages.yml
+  components: components/lucky-cart-components.yml

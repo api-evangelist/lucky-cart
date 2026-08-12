@@ -1,0 +1,38 @@
+generated: '2026-08-12'
+method: searched
+source: https://www.luckycart.com/en
+sources:
+- https://www.luckycart.com/en
+- https://www.luckycart.com/en/notre-solution
+- https://www.luckycart.com/en/contact
+- https://www.luckycart.com/en/plan-du-site
+plan_count: 0
+model: enterprise sales only — no published pricing
+currency: null
+plans: []
+note: >-
+  Lucky Cart publishes NO pricing of any kind. There is no /pricing page, no tier table,
+  no rate card and no self-service signup anywhere on luckycart.com — the site navigation
+  and footer were read in full (challenges, in-practice, solution, news, who-we-are,
+  contact, FAQ/glossary, certifications, legal, sitemap) and contain no commercial terms.
+  This is consistent with the business model: Lucky Cart sells retail-media programs to
+  grocery retailers and CPG brands, where the SDK README states that integration keys are
+  "provided by our integration team", so both commercial terms and API credentials are
+  negotiated rather than purchased. plan_count is 0 as a measured fact, not a gap in this
+  pass.
+acquisition_path:
+  self_service: false
+  free_tier: false
+  trial: false
+  signup_url: null
+  contact_sales: https://www.luckycart.com/en/contact
+  customer_platform: https://app.luckycart.com/
+  customer_platform_note: >-
+    app.luckycart.com resolves and returns HTTP 200 with the title "Lucky Cart | Promotion
+    Management Platform" — the existing-customer platform. It is a login surface for
+    accounts already provisioned by Lucky Cart, not a self-service registration flow.
+  credential_issuance: manual, via the Lucky Cart integration team
+buyer:
+- grocery and mass-market retailers
+- CPG brands and their media agencies
+checked: '2026-08-12'

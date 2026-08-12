@@ -1,0 +1,101 @@
+generated: '2026-08-12'
+method: searched
+source: https://www.luckycart.com/en/certifications
+sources:
+- https://www.luckycart.com/en/certifications
+- https://github.com/lucky-cart/luckycart-js-sdk/blob/master/sdk/src/luckycart.js
+note: >-
+  Two separate things are recorded here. First, a real published compliance claim: Lucky
+  Cart states on its own certifications page that it is ISO 9001 certified, audited by
+  certifying professionals on a three-year renewal cycle. That is a quality-management
+  certification, not an information-security one — no SOC 2, ISO 27001, PCI DSS, HIPAA
+  or FedRAMP claim appears anywhere on luckycart.com. Second, the cross-cutting API
+  standards below, each judged against Lucky Cart's own SDK source because no OpenAPI is
+  published. Every "conforms: false" here is a measured absence, not an assumption.
+certifications:
+- id: iso-9001
+  name: ISO 9001
+  domain: quality management system
+  claimed: true
+  scope: Lucky Cart's Quality Management System
+  renewal_cycle: three years
+  auditor: named only as "certifying professionals"; certifying body not published
+  certificate_published: false
+  evidence: https://www.luckycart.com/en/certifications
+standards:
+- id: iso-9001
+  conforms: true
+  evidence: provider states "Lucky cart is ISO 9001 certified" on its own certifications page
+- id: oauth2
+  conforms: false
+  evidence: >-
+    no OAuth 2.0 anywhere in the three first-party SDKs; authentication is a site key
+    plus an HMAC-SHA256 shared secret
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returned 404 on all nine Lucky Cart hosts
+- id: rfc8414-oauth-server-metadata
+  conforms: false
+  evidence: /.well-known/oauth-authorization-server returned 404 on all nine hosts
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    errors are a proprietary JSON envelope; the core API mirrors its status code into a
+    body `status` field with a human string in `error`, and the banner/experience APIs
+    use `message`. No application/problem+json anywhere.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returned 404 on all nine hosts including the apex
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: no Sunset or Deprecation header handling in any SDK; no deprecation policy published
+- id: rfc8615-well-known
+  conforms: false
+  evidence: no /.well-known/ document of any kind is served — see well-known/lucky-cart-well-known.yml
+- id: openapi
+  conforms: false
+  evidence: >-
+    no OpenAPI or Swagger document found; /openapi.json, /openapi.yaml, /swagger.json and
+    /v1/openapi.json all returned 404 on every API host, the docs host and the marketing host
+- id: asyncapi
+  conforms: false
+  evidence: no AsyncAPI document and no published webhook or event-subscription surface
+- id: json-api
+  conforms: false
+  evidence: responses are bespoke JSON objects with no JSON:API document structure
+- id: idempotency
+  conforms: false
+  evidence: >-
+    no idempotency key on either write endpoint (POST /cart/ticket, POST /v1/event) —
+    see conventions/lucky-cart-conventions.yml
+- id: pagination
+  conforms: false
+  evidence: >-
+    no cursor, offset, page or limit parameter on any collection read; only a `count` cap
+    on the game-experience endpoint
+- id: a2a
+  conforms: false
+  evidence: >-
+    /.well-known/agent-card.json and /.well-known/agent.json both returned 404 on all nine hosts
+- id: mcp
+  conforms: false
+  evidence: no Model Context Protocol server published or referenced
+- id: gdpr
+  conforms: unknown
+  evidence: >-
+    Lucky Cart is a French company processing retailer first-party transactional data and
+    publishes a privacy policy, but makes no explicit GDPR compliance CLAIM on its
+    certifications page, so this is left unknown rather than asserted either way
+regulatory_context:
+  jurisdiction: France / European Union
+  sector: retail media, marketing technology
+  note: >-
+    Processes retailer first-party shopper and transaction data on behalf of grocery
+    retailers and CPG brands, which places it squarely in GDPR scope as a processor, but
+    no data-processing-agreement or subprocessor page is published publicly.
+summary:
+  standards_assessed: 16
+  conforming: 1
+  non_conforming: 14
+  unknown: 1
+  published_certifications: 1

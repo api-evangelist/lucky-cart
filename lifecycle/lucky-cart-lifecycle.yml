@@ -1,0 +1,94 @@
+generated: '2026-08-12'
+method: searched
+source: https://github.com/lucky-cart
+sources:
+- https://github.com/lucky-cart
+- https://github.com/lucky-cart/lucky-cart-android/tags
+- https://www.luckycart.com/en/plan-du-site
+note: >-
+  Lucky Cart publishes no API versioning policy, no deprecation policy, no SLA and no
+  status page. The only lifecycle signal it emits publicly is SDK release tags on its own
+  GitHub organization, and those stopped in early 2023. This file records that state
+  honestly; no StatusPage and no Deprecation pointer is emitted in apis.yml, because
+  neither exists.
+versioning:
+  scheme: uri-path, inconsistently applied
+  current: v1 on three of six services; the other three are unversioned
+  policy_url: null
+  policy_published: false
+  detail: >-
+    shopper-events, shopper-experience and game-experience-api each pin /v1 into their
+    base URL. api.luckycart.com, displayer.luckycart.com and promomatching.luckycart.com
+    carry no version segment. No policy explains the split, and no v2 of anything is
+    referenced. See conventions/lucky-cart-conventions.yml.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  evidence: >-
+    No Sunset or Deprecation header is set or read anywhere in the three first-party
+    SDKs, and no deprecation, migration or end-of-life page exists on luckycart.com or in
+    the GitHub organization. There is no announced path off any endpoint.
+sla:
+  url: null
+  published: false
+  uptime_target: null
+  evidence: >-
+    No SLA, uptime commitment or support-response commitment is published on the public
+    site. Commercial terms sit behind a sales conversation — see
+    plans/lucky-cart-plans-pricing.yml.
+status_page:
+  url: null
+  published: false
+  evidence: >-
+    status.luckycart.com does not resolve (no DNS record, 2026-08-12), and no
+    Statuspage/Instatus/Better Stack property is linked from luckycart.com, the GitHub
+    organization or the SDK READMEs. There is no way for an integrator to learn that the
+    banner or game API is degraded other than by observing their own storefront.
+  probed:
+  - host: status.luckycart.com
+    dns: none
+    result: NXDOMAIN
+changelog:
+  url: null
+  published: false
+  evidence: >-
+    No dated changelog, release-notes page or product-update feed for the APIs. The
+    company publishes company news at /en/actualites, which is marketing news, not API
+    change history. The closest thing to an API changelog is the Git tag list on the
+    Android and iOS SDK repositories.
+  nearest_equivalent: https://github.com/lucky-cart/lucky-cart-android/tags
+release_history:
+  source: GitHub tags and commit dates on the first-party SDK repositories
+  entries:
+  - component: lucky-cart-android
+    version: 1.0.18
+    date: '2023-01-09'
+    channel: JitPack
+  - component: lucky-cart-ios
+    version: 1.0.0
+    date: '2023-03-01'
+    channel: Swift Package Manager
+    note: date is the repository's last commit; the tag object could not be dereferenced
+      to a commit date
+  - component: luckycart-js-sdk
+    version: null
+    date: '2022-08-26'
+    channel: CDN script tag, unpinned
+    note: last commit date; the package.json in the repository is an unpublished scaffold
+      reading name "sdk", version "1.0.0"
+deprecated_operations: []
+maturity:
+  api_surface: live
+  client_surface: unmaintained
+  assessment: >-
+    A live platform with a lapsed public client surface. All six API hosts resolve to the
+    same origin (130.211.45.3) and answer, so the services are running. But no client
+    library has shipped since 2023-01-09, the JavaScript SDK's own documented CDN loader
+    URL now returns 404, and the Help Centre that carries the integration articles is
+    access-restricted. An integrator arriving today from the public surface cannot
+    complete the documented installation step for the web SDK.
+  last_public_release: '2023-01-09'
+  years_since_last_release: 3
+checked: '2026-08-12'

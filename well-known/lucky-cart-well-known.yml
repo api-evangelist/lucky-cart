@@ -1,0 +1,87 @@
+generated: '2026-08-12'
+method: probed
+source: live HTTPS probes of every Lucky Cart host named in apis.yml and in the first-party SDK source
+note: >-
+  RECORDED ABSENCE. Every /.well-known/ path was probed on all nine Lucky Cart hosts —
+  the marketing site, the five API hosts documented in the first-party SDKs, the banner
+  image host, the game experience host and the SDK asset host. All 99 probes returned
+  HTTP 404. No security.txt, no OpenID Connect discovery document, no OAuth
+  authorization-server metadata, no api-catalog, no ai-plugin manifest, and no A2A agent
+  card is served anywhere on luckycart.com. Because nothing returned a real document, NO
+  WellKnown and NO SecurityTxt pointer is emitted in apis.yml — this file documents an
+  absence, and an absence must not be scored as a presence. The 404 bodies differ by
+  host tier (HTML from the Webflow marketing site, JSON from the Node API hosts, XML
+  from the Google Cloud Storage-backed asset hosts), which confirms the probes reached
+  the real origins rather than a single catch-all.
+hosts_probed:
+- host: www.luckycart.com
+  role: marketing website
+  root_status: 200
+- host: api.luckycart.com
+  role: core Lucky Cart API (cart/ticket, game data)
+  root_status: 404
+- host: shopper-events.luckycart.com
+  role: Shopper Events API
+  root_status: 404
+- host: shopper-experience.luckycart.com
+  role: Shopper Experience API
+  root_status: 404
+- host: game-experience-api.luckycart.com
+  role: Game Experience API
+  root_status: 404
+- host: displayer.luckycart.com
+  role: banner displayer API
+  root_status: 404
+- host: promomatching.luckycart.com
+  role: promo matching / banner image + jump host
+  root_status: 204
+- host: experiences.luckycart.com
+  role: hosted game experience frames
+  root_status: 404
+- host: integration.luckycart.com
+  role: JavaScript SDK and asset distribution
+  root_status: 200
+paths_probed:
+- /.well-known/security.txt
+- /.well-known/openid-configuration
+- /.well-known/oauth-authorization-server
+- /.well-known/api-catalog
+- /.well-known/ai-plugin.json
+- /.well-known/agent-card.json
+- /.well-known/agent.json
+- /llms.txt
+documents: []
+results:
+- path: /.well-known/security.txt
+  status: 404
+  hosts: all nine
+- path: /.well-known/openid-configuration
+  status: 404
+  hosts: all nine
+- path: /.well-known/oauth-authorization-server
+  status: 404
+  hosts: all nine
+- path: /.well-known/api-catalog
+  status: 404
+  hosts: all nine
+- path: /.well-known/ai-plugin.json
+  status: 404
+  hosts: all nine
+- path: /.well-known/agent-card.json
+  status: 404
+  hosts: all nine
+- path: /.well-known/agent.json
+  status: 404
+  hosts: all nine
+- path: /llms.txt
+  status: 404
+  hosts: all nine
+- path: https://luckycart.com/.well-known/security.txt
+  status: 404
+  hosts: apex, followed redirect
+summary:
+  hosts: 9
+  paths_per_host: 8
+  documents_found: 0
+  pointer_emitted: false
+  checked: '2026-08-12'

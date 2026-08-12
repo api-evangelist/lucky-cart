@@ -1,0 +1,59 @@
+generated: '2026-08-12'
+method: searched
+source: https://github.com/lucky-cart/luckycart-js-sdk
+sources:
+- https://github.com/lucky-cart/luckycart-js-sdk/blob/master/sdk/src/luckycart.js
+- https://github.com/lucky-cart/lucky-cart-ios#configuration
+- https://github.com/lucky-cart/lucky-cart-android#use-in-client-application
+limit_count: 0
+limits: []
+note: >-
+  Lucky Cart documents NO rate limits. There is no published limit figure, no quota, no
+  burst allowance and no throttling policy anywhere on the public surface — not on
+  luckycart.com, not in the three first-party SDK repositories, and not reachable via the
+  Help Centre, which is access-restricted (kb.luckycart.com returns HTTP 403). limit_count
+  is 0 as a measured absence.
+response_headers:
+  advertised: []
+  observed: []
+  detail: >-
+    No SDK sets or reads X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+    RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset or Retry-After. The iOS request
+    manager sets exactly one request header (content-type) and inspects only whether the
+    response status falls in 200..<300, discarding all response headers. An agent calling
+    these APIs has no runtime signal of remaining budget.
+exhaustion:
+  status_code: undocumented
+  handling_in_sdks: >-
+    None of the three SDKs has any 429 branch. The iOS client maps every non-2xx status to
+    a single opaque URLError.badServerResponse, so a throttled response is indistinguishable
+    from a server error or a bad request.
+client_side_throttling:
+  note: >-
+    What Lucky Cart ships instead of a documented server limit is a client-side retry
+    budget, which is a different thing and must not be read as a rate limit. These are the
+    SDK defaults Lucky Cart chose.
+  settings:
+  - platform: ios
+    parameter: LCConfiguration.shared.apiRetries
+    default: 5
+    documented_example: 5
+  - platform: ios
+    parameter: LCConfiguration.shared.apiRetryDelay
+    default: 0.5
+    unit: seconds
+  - platform: android
+    parameter: setPollingConfig(retryAfter, maxAttempts)
+    documented_example: 500ms, 5 attempts
+  - platform: web
+    parameter: gameDataMaxAttempt / gameDataInterval
+    note: >-
+      bounded polling loop in getGameData(), triggered by the literal body error string
+      "Cart not found" rather than by any status code or Retry-After header
+gaps:
+- no published rate limit or quota
+- no rate-limit response headers on any service
+- no documented 429 behaviour
+- no Retry-After support
+- the only retry guidance is a client string-match on the error text "Cart not found"
+checked: '2026-08-12'
