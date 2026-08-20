@@ -63,6 +63,10 @@ apis:
   humanURL: https://github.com/lucky-cart/luckycart-js-sdk#send-the-current-transaction
   baseURL: https://api.luckycart.com
   tags:
+  - Transaction
+  - Promotions
+  - Gamification
+  tags_raw:
   - Transactions
   - Promotions
   - Gamification
@@ -85,6 +89,10 @@ apis:
   humanURL: https://github.com/lucky-cart/lucky-cart-ios#pageviewed-event
   baseURL: https://shopper-events.luckycart.com/v1
   tags:
+  - Event
+  - Analytics
+  - Shopper Marketing
+  tags_raw:
   - Events
   - Analytics
   - Shopper Marketing
@@ -103,6 +111,9 @@ apis:
   humanURL: https://github.com/lucky-cart/luckycart-js-sdk
   baseURL: https://shopper-experience.luckycart.com/v1
   tags:
+  - Experience
+  - Personalization
+  tags_raw:
   - Experiences
   - Personalization
   properties:
@@ -121,6 +132,10 @@ apis:
   humanURL: https://github.com/lucky-cart/lucky-cart-ios#configuration
   baseURL: https://game-experience-api.luckycart.com/v1
   tags:
+  - Gamification
+  - Loyalty
+  - Experience
+  tags_raw:
   - Gamification
   - Loyalty
   - Experiences
