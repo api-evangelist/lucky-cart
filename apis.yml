@@ -12,16 +12,20 @@ description: 'Lucky Cart is a French MarTech company specializing in retail medi
   integration team to contracted retailers, and its Help Centre is access-restricted.'
 url: https://raw.githubusercontent.com/api-evangelist/lucky-cart/refs/heads/main/apis.yml
 deliveryModel:
-  model: unknown
+  model: saas
+  license_evidence:
+    not_product:
+    - lucky-cart/lucky-cart-ios
+    - lucky-cart/luckycart-js-sdk
   open_source: unknown
   commercial: true
   callable_host: false
-  label: Delivery model not determined — needs a product licence on record
+  label: Hosted service · you call their endpoint
   confidence: low
   source:
   - pricing
-  - repository-unlicensed
-  generated: '2026-08-28'
+  - repository-not-product
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: none-published
@@ -47,6 +51,21 @@ specificationVersion: '0.23'
 created: '2026-07-17'
 modified: '2026-08-12'
 tags:
+- Company
+- Retail Media
+- MarTech
+- E-Commerce
+- Advertising
+- Personalization
+- Loyalty
+- Consumer Packaged Goods
+- Grocery
+- Promotions
+- Gamification
+- Shopper Marketing
+- First-Party Data
+- France
+tags_raw:
 - Company
 - Retail Media
 - MarTech
