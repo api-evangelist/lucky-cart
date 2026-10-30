@@ -64,6 +64,108 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Lucky Cart is a company surfaced as a portfolio company of partech and added to the API Evangelist network as a stub for enrichment. Sector: Applicative SaaS. This profile is a lead awaiting the enrichment pipeline.
+Lucky Cart is a French MarTech company specializing in retail media and smart commerce for grocery and consumer-goods retailers. It combines first-party transactional data with e-retail media, machine learning, and AI to power personalized shopper engagement, gamified promotions, and the monetization of retailer audiences at scale. Lucky Cart works with major French grocery retailers and CPG brands to activate transactional data into targeted advertising, loyalty, and measurable campaigns. Its integration surface is a set of HTTP APIs consumed through three first-party SDKs published on GitHub — a shopper-event ingest, a promotional banner displayer, a cart-to-ticket endpoint that mints the post-purchase game, and a hosted game experience. Lucky Cart publishes no OpenAPI, no developer portal and no self-service signup: API keys are issued manually by its integration team to contracted retailers, and its Help Centre is access-restricted.
 
-Backed by: partech — http://luckycart.com/
+**Areas:** Company · Retail Media · MarTech · E-Commerce · Advertising · Personalization · Loyalty · Consumer Packaged Goods · Grocery · Promotions · Gamification · Shopper Marketing
+
+## Lucky Cart on APIs.io
+
+Everything profiled for Lucky Cart is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/lucky-cart/](https://apis.io/providers/lucky-cart/)** — or go straight to one of the APIs or properties below.
+
+### APIs (6)
+
+- [Lucky Cart Core API](https://apis.io/apis/lucky-cart/core-api/) — The core Lucky Cart API. POST /cart/ticket submits a validated shopping cart — cart identifier, shopper identifier, gross and net amounts, and product lines…
+- [Lucky Cart Shopper Events API](https://apis.io/apis/lucky-cart/shopper-events-api/) — Event ingest for shopper behaviour on a retailer storefront. A single POST /event endpoint accepts {shopperId, siteKey, eventName, payload}, where eventName…
+- [Lucky Cart Shopper Experience API](https://apis.io/apis/lucky-cart/shopper-experience-api/) — Returns the set of Lucky Cart experiences currently available to a given shopper. GET /experiences takes shopperId, siteKey and an experienceType filter as…
+- [Lucky Cart Game Experience API](https://apis.io/apis/lucky-cart/game-experience-api/) — Grants access to the gamified post-purchase experiences a shopper has earned. GET /game-experiences-access takes shopperId, siteKey and a count parameter…
+- [Lucky Cart Displayer API](https://apis.io/apis/lucky-cart/displayer-api/) — Selects and returns the promotional banner to render for a given page context. The route encodes the whole selection key in the path —…
+- [Lucky Cart Promo Matching API](https://apis.io/apis/lucky-cart/promo-matching-api/) — The promo-matching and creative-delivery host used by the JavaScript SDK. It serves the same banner selection routes as the displayer —…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Lucky Cart Authentication](https://apis.io/security/lucky-cart/lucky-cart-authentication/)
+- [Lucky Cart Domain Security](https://apis.io/security/lucky-cart/lucky-cart-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Lucky Cart Plans Pricing](https://apis.io/plans/lucky-cart/lucky-cart-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Lucky Cart Rate Limits](https://apis.io/rate-limits/lucky-cart/lucky-cart-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.luckycart.com/)
+- [Documentation](https://github.com/lucky-cart/luckycart-js-sdk#readme)
+- [Support](https://www.luckycart.com/contact)
+- [Blog](https://www.luckycart.com/actualites)
+- [Compliance](https://www.luckycart.com/en/certifications)
+- [Terms of service](https://www.luckycart.com/mentions-legales)
+- [Privacy policy](https://www.luckycart.com/politique-de-confidentialite)
+- [GitHub](https://github.com/lucky-cart)
+
+## API Evangelist rating
+
+**Kin Score 26.0** — emerging · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 71.4 |
+| Contract quality | 0.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 2.6 |
+| Developer ergonomics | 35.7 |
+| Access clarity | 35.5 |
+
+**Agent readiness 5.0** — human-only
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 29.4** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/lucky-cart/](https://apis.io/providers/lucky-cart/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Lucky Cart: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/lucky-cart/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
